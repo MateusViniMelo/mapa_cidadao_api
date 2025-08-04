@@ -1,0 +1,374 @@
+{
+    "variable": [
+        {
+            "id": "baseUrl",
+            "key": "baseUrl",
+            "type": "string",
+            "name": "string",
+            "value": "http:\/\/localhost"
+        }
+    ],
+    "info": {
+        "name": "Mapa Cidad\u00e3o Api API Documentation",
+        "_postman_id": "8e0b42a9-9758-4b12-b224-36fe0e3a6792",
+        "description": "A Mapa Cidad\u00e3o \u00e9 uma API RESTful desenvolvida em Laravel, que permite aos usu\u00e1rios registrar, listar e gerenciar ocorr\u00eancias urbanas de maneira simples, geolocalizada e segura.",
+        "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
+    },
+    "item": [
+        {
+            "name": "Autentica\u00e7\u00e3o",
+            "description": "",
+            "item": [
+                {
+                    "name": "Autenticar usu\u00e1rio e retornar token de acesso.\n\nEste endpoint permite que o usu\u00e1rio realize login com e-mail e senha v\u00e1lidos.",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/user\/login",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/user\/login"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"email\":\"usuario@email.com\",\"password\":\"SenhaForte@123\"}"
+                        },
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n \"user\": {\n   \"id\": 1,\n   \"name\": \"Jo\u00e3o Silva\",\n   \"email\": \"user@email.com\",\n    \"date_birth\": \"2002-02-01\",\n   \"created_at\": \"2025-07-10T19:00:00.000000Z\",\n   \"updated_at\": \"2025-07-10T19:00:00.000000Z\"\n },\n \"token\": \"1|XyzAbc123...\"\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 401,
+                            "body": "{\n \"message\": \"Credenciais inv\u00e1lidas\"\n}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Retornar informa\u00e7\u00f5es do usu\u00e1rio autenticado.\n\nEste endpoint retorna os dados do usu\u00e1rio logado e um novo token de acesso.",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/user\/me",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/user\/me"
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": ""
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n \"user\": {\n   \"id\": 1,\n   \"name\": \"Jo\u00e3o Silva\",\n   \"email\": \"user@email.com\",\n    \"date_birth\": \"2002-02-01\",\n   \"created_at\": \"2025-07-10T19:00:00.000000Z\",\n   \"updated_at\": \"2025-07-10T19:00:00.000000Z\"\n },\n \"token\": \"1|XyzAbc123...\"\n}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Fazer logout do usu\u00e1rio autenticado.\n\nEste endpoint revoga o token de acesso atual do usu\u00e1rio.",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/user\/logout",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/user\/logout"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": ""
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n \"message\": \"Logout realizado com sucesso\"\n}",
+                            "name": ""
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Cadastrar",
+            "description": "",
+            "item": [
+                {
+                    "name": "Registrar novo usu\u00e1rio\n\nEste endpoint cria um novo usu\u00e1rio e retorna um token de autentica\u00e7\u00e3o.",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/register",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/register"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"name\":\"Jo\u00e3o da Silva\",\"email\":\"joao@email.com\",\"password\":\"SenhaForte@123\",\"date_birth\":\"1990-05-21\"}"
+                        },
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 201,
+                            "body": "{\n  \"user\": {\n    \"id\": 1,\n    \"name\": \"Jo\u00e3o da Silva\",\n    \"email\": \"joao@email.com\",\n    \"date_birth\": \"1990-05-21\",\n    \"created_at\": \"2025-07-10T20:00:00.000000Z\",\n    \"updated_at\": \"2025-07-10T20:00:00.000000Z\"\n  },\n  \"token\": \"1|abc123def456...\"\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 422,
+                            "body": "{\n  \"message\": \"The given data was invalid.\",\n  \"errors\": {\n    \"password\": [\n      \"A senha deve conter pelo menos uma letra mai\u00fascula, uma min\u00fascula, um n\u00famero e um caractere especial.\",\n      \"A confirma\u00e7\u00e3o da senha n\u00e3o corresponde.\"\n    ]\n  }\n}",
+                            "name": ""
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Endpoints",
+            "description": "",
+            "item": [
+                {
+                    "name": "GET api\/user",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/user",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/user"
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [
+                                {
+                                    "key": "cache-control",
+                                    "value": "no-cache, private"
+                                },
+                                {
+                                    "key": "content-type",
+                                    "value": "application\/json"
+                                },
+                                {
+                                    "key": "access-control-allow-origin",
+                                    "value": "*"
+                                }
+                            ],
+                            "code": 401,
+                            "body": "{\"message\":\"Unauthenticated.\"}",
+                            "name": ""
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Ocorr\u00eancias",
+            "description": "",
+            "item": [
+                {
+                    "name": "Listar todas as ocorr\u00eancias\n\nEste endpoint retorna uma lista de todas as ocorr\u00eancias registradas.",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/ocurrences",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/ocurrences"
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n  \"ocurrences\": [\n    {\n      \"id\": 1,\n      \"type_id\": 2,\n      \"user_id\": 8,\n      \"description\": \"Buraco na rua que est\u00e1 dificultando o tr\u00e1fego\",\n      \"location\": {\n        \"type\": \"Point\",\n        \"coordinates\": [-15.7801, -47.9292]\n      },\n      \"address_name\": \"Rua das Palmeiras, 123\",\n      \"city\": \"Bel\u00e9m\",\n      \"state\": \"PA\",\n      \"country\": \"Brasil\",\n      \"created_at\": \"2025-07-10T20:30:00.000000Z\",\n      \"updated_at\": \"2025-07-10T20:30:00.000000Z\"\n    }\n  ]\n}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Registrar nova ocorr\u00eancia\n\nEste endpoint permite que usu\u00e1rios autenticados registrem uma nova ocorr\u00eancia no sistema.",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/ocurrences",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/ocurrences"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"location\":{\"type\":\"Point\",\"coordinates\":[-15.7801,-47.9292]},\"type_id\":2,\"description\":\"Buraco na rua dificultando o tr\u00e1fego\",\"address_name\":\"Rua das Palmeiras, 123\",\"city\":\"Bel\u00e9m\",\"state\":\"PA\",\"country\":\"Brasil\"}"
+                        },
+                        "description": ""
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 201,
+                            "body": "{\n  \"ocurrence\": {\n    \"id\": 1,\n    \"type_id\": 2,\n    \"user_id\": 8,\n    \"description\": \"Buraco na rua dificultando o tr\u00e1fego\",\n    \"location\": {\n      \"type\": \"Point\",\n      \"coordinates\": [-15.7801, -47.9292]\n    },\n    \"address_name\": \"Rua das Palmeiras, 123\",\n    \"city\": \"Bel\u00e9m\",\n    \"state\": \"PA\",\n    \"country\": \"Brasil\",\n    \"is_active\": true,\n    \"created_at\": \"2025-07-10T20:30:00.000000Z\",\n    \"updated_at\": \"2025-07-10T20:30:00.000000Z\"\n  }\n}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 422,
+                            "body": "{\n  \"message\": \"The given data was invalid.\",\n  \"errors\": {\n    \"type_id\": [\"O tipo informado n\u00e3o existe.\"],\n    \"location\": [\"O campo location deve ser um ponto GeoJSON v\u00e1lido.\"]\n  }\n}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Deletar ocorr\u00eancia\n\nEste endpoint permite que um usu\u00e1rio autenticado exclua uma ocorr\u00eancia existente.",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/ocurrences\/:ocurrence_id",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/ocurrences\/:ocurrence_id",
+                            "variable": [
+                                {
+                                    "id": "ocurrence_id",
+                                    "key": "ocurrence_id",
+                                    "value": "16",
+                                    "description": "The ID of the ocurrence."
+                                },
+                                {
+                                    "id": "ocurrence",
+                                    "key": "ocurrence",
+                                    "value": "1",
+                                    "description": "ID da ocorr\u00eancia a ser deletada."
+                                }
+                            ]
+                        },
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": ""
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 204,
+                            "body": "\"\"",
+                            "name": ""
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "auth": {
+        "type": "bearer",
+        "bearer": [
+            {
+                "key": "Authorization",
+                "type": "string"
+            }
+        ]
+    }
+}

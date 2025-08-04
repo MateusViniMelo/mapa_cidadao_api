@@ -1,0 +1,287 @@
+name: Ocorrências
+description: ''
+endpoints:
+  -
+    httpMethods:
+      - GET
+    uri: api/ocurrences
+    metadata:
+      groupName: Ocorrências
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: |-
+        Listar todas as ocorrências
+
+        Este endpoint retorna uma lista de todas as ocorrências registradas.
+      description: ''
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "ocurrences": [
+              {
+                "id": 1,
+                "type_id": 2,
+                "user_id": 8,
+                "description": "Buraco na rua que está dificultando o tráfego",
+                "location": {
+                  "type": "Point",
+                  "coordinates": [-15.7801, -47.9292]
+                },
+                "address_name": "Rua das Palmeiras, 123",
+                "city": "Belém",
+                "state": "PA",
+                "country": "Brasil",
+                "created_at": "2025-07-10T20:30:00.000000Z",
+                "updated_at": "2025-07-10T20:30:00.000000Z"
+              }
+            ]
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/ocurrences
+    metadata:
+      groupName: Ocorrências
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: |-
+        Registrar nova ocorrência
+
+        Este endpoint permite que usuários autenticados registrem uma nova ocorrência no sistema.
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer Bearer {YOUR_AUTH_TOKEN}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      location:
+        name: location
+        description: 'Coordenadas geográficas no formato GeoJSON Point.'
+        required: true
+        example:
+          type: Point
+          coordinates:
+            - -15.7801
+            - -47.9292
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+      type_id:
+        name: type_id
+        description: 'ID do tipo de ocorrência existente. The <code>id</code> of an existing record in the types_ocurrence table.'
+        required: true
+        example: 2
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+      description:
+        name: description
+        description: 'Descrição do problema (opcional, até 250 caracteres). Must not be greater than 250 characters.'
+        required: false
+        example: 'Buraco na rua dificultando o tráfego'
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        custom: []
+      address_name:
+        name: address_name
+        description: 'Endereço descritivo da ocorrência. Must not be greater than 500 characters.'
+        required: true
+        example: 'Rua das Palmeiras, 123'
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+      city:
+        name: city
+        description: 'Cidade da ocorrência. Must not be greater than 250 characters.'
+        required: false
+        example: Belém
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        custom: []
+      state:
+        name: state
+        description: 'Estado da ocorrência. Must not be greater than 250 characters.'
+        required: false
+        example: PA
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        custom: []
+      country:
+        name: country
+        description: 'País da ocorrência. Must not be greater than 250 characters.'
+        required: false
+        example: Brasil
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        custom: []
+    cleanBodyParameters:
+      location:
+        type: Point
+        coordinates:
+          - -15.7801
+          - -47.9292
+      type_id: 2
+      description: 'Buraco na rua dificultando o tráfego'
+      address_name: 'Rua das Palmeiras, 123'
+      city: Belém
+      state: PA
+      country: Brasil
+    fileParameters: []
+    responses:
+      -
+        status: 201
+        content: |-
+          {
+            "ocurrence": {
+              "id": 1,
+              "type_id": 2,
+              "user_id": 8,
+              "description": "Buraco na rua dificultando o tráfego",
+              "location": {
+                "type": "Point",
+                "coordinates": [-15.7801, -47.9292]
+              },
+              "address_name": "Rua das Palmeiras, 123",
+              "city": "Belém",
+              "state": "PA",
+              "country": "Brasil",
+              "is_active": true,
+              "created_at": "2025-07-10T20:30:00.000000Z",
+              "updated_at": "2025-07-10T20:30:00.000000Z"
+            }
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 422
+        content: |-
+          {
+            "message": "The given data was invalid.",
+            "errors": {
+              "type_id": ["O tipo informado não existe."],
+              "location": ["O campo location deve ser um ponto GeoJSON válido."]
+            }
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer Bearer {token-aqui}'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - DELETE
+    uri: 'api/ocurrences/{ocurrence_id}'
+    metadata:
+      groupName: Ocorrências
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: |-
+        Deletar ocorrência
+
+        Este endpoint permite que um usuário autenticado exclua uma ocorrência existente.
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer Bearer {YOUR_AUTH_TOKEN}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      ocurrence_id:
+        name: ocurrence_id
+        description: 'The ID of the ocurrence.'
+        required: true
+        example: 16
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+      ocurrence:
+        name: ocurrence
+        description: 'ID da ocorrência a ser deletada.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanUrlParameters:
+      ocurrence_id: 16
+      ocurrence: 1
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 204
+        content: '""'
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer Bearer {token-aqui}'
+    controller: null
+    method: null
+    route: null
+    custom: []

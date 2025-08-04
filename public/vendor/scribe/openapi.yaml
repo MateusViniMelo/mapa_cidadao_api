@@ -1,0 +1,605 @@
+openapi: 3.0.3
+info:
+  title: 'Mapa Cidadão Api API Documentation'
+  description: 'A Mapa Cidadão é uma API RESTful desenvolvida em Laravel, que permite aos usuários registrar, listar e gerenciar ocorrências urbanas de maneira simples, geolocalizada e segura.'
+  version: 1.0.0
+servers:
+  -
+    url: 'http://localhost'
+tags:
+  -
+    name: Autenticação
+    description: ''
+  -
+    name: Cadastrar
+    description: ''
+  -
+    name: Endpoints
+    description: ''
+  -
+    name: Ocorrências
+    description: ''
+components:
+  securitySchemes:
+    default:
+      type: http
+      scheme: bearer
+      description: 'Utilize seu token de acesso obtido no endpoint de login. Envie no header como: <code>Authorization: Bearer {token}</code>.'
+security:
+  -
+    default: []
+paths:
+  /api/user/login:
+    post:
+      summary: "Autenticar usuário e retornar token de acesso.\n\nEste endpoint permite que o usuário realize login com e-mail e senha válidos."
+      operationId: autenticarUsurioERetornarTokenDeAcessoEsteEndpointPermiteQueOUsurioRealizeLoginComEMailESenhaVlidos
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  user:
+                    id: 1
+                    name: 'João Silva'
+                    email: user@email.com
+                    date_birth: '2002-02-01'
+                    created_at: '2025-07-10T19:00:00.000000Z'
+                    updated_at: '2025-07-10T19:00:00.000000Z'
+                  token: 1|XyzAbc123...
+                properties:
+                  user:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 1
+                      name:
+                        type: string
+                        example: 'João Silva'
+                      email:
+                        type: string
+                        example: user@email.com
+                      date_birth:
+                        type: string
+                        example: '2002-02-01'
+                      created_at:
+                        type: string
+                        example: '2025-07-10T19:00:00.000000Z'
+                      updated_at:
+                        type: string
+                        example: '2025-07-10T19:00:00.000000Z'
+                  token:
+                    type: string
+                    example: 1|XyzAbc123...
+        401:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Credenciais inválidas'
+                properties:
+                  message:
+                    type: string
+                    example: 'Credenciais inválidas'
+      tags:
+        - Autenticação
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  description: 'E-mail do usuário para login. Must be a valid email address.'
+                  example: usuario@email.com
+                  nullable: false
+                password:
+                  type: string
+                  description: 'Senha do usuário.'
+                  example: SenhaForte@123
+                  nullable: false
+              required:
+                - email
+                - password
+      security: []
+  /api/user/me:
+    get:
+      summary: "Retornar informações do usuário autenticado.\n\nEste endpoint retorna os dados do usuário logado e um novo token de acesso."
+      operationId: retornarInformaesDoUsurioAutenticadoEsteEndpointRetornaOsDadosDoUsurioLogadoEUmNovoTokenDeAcesso
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  user:
+                    id: 1
+                    name: 'João Silva'
+                    email: user@email.com
+                    date_birth: '2002-02-01'
+                    created_at: '2025-07-10T19:00:00.000000Z'
+                    updated_at: '2025-07-10T19:00:00.000000Z'
+                  token: 1|XyzAbc123...
+                properties:
+                  user:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 1
+                      name:
+                        type: string
+                        example: 'João Silva'
+                      email:
+                        type: string
+                        example: user@email.com
+                      date_birth:
+                        type: string
+                        example: '2002-02-01'
+                      created_at:
+                        type: string
+                        example: '2025-07-10T19:00:00.000000Z'
+                      updated_at:
+                        type: string
+                        example: '2025-07-10T19:00:00.000000Z'
+                  token:
+                    type: string
+                    example: 1|XyzAbc123...
+      tags:
+        - Autenticação
+  /api/user/logout:
+    post:
+      summary: "Fazer logout do usuário autenticado.\n\nEste endpoint revoga o token de acesso atual do usuário."
+      operationId: fazerLogoutDoUsurioAutenticadoEsteEndpointRevogaOTokenDeAcessoAtualDoUsurio
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Logout realizado com sucesso'
+                properties:
+                  message:
+                    type: string
+                    example: 'Logout realizado com sucesso'
+      tags:
+        - Autenticação
+  /api/register:
+    post:
+      summary: "Registrar novo usuário\n\nEste endpoint cria um novo usuário e retorna um token de autenticação."
+      operationId: registrarNovoUsurioEsteEndpointCriaUmNovoUsurioERetornaUmTokenDeAutenticao
+      description: ''
+      parameters: []
+      responses:
+        201:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  user:
+                    id: 1
+                    name: 'João da Silva'
+                    email: joao@email.com
+                    date_birth: '1990-05-21'
+                    created_at: '2025-07-10T20:00:00.000000Z'
+                    updated_at: '2025-07-10T20:00:00.000000Z'
+                  token: 1|abc123def456...
+                properties:
+                  user:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 1
+                      name:
+                        type: string
+                        example: 'João da Silva'
+                      email:
+                        type: string
+                        example: joao@email.com
+                      date_birth:
+                        type: string
+                        example: '1990-05-21'
+                      created_at:
+                        type: string
+                        example: '2025-07-10T20:00:00.000000Z'
+                      updated_at:
+                        type: string
+                        example: '2025-07-10T20:00:00.000000Z'
+                  token:
+                    type: string
+                    example: 1|abc123def456...
+        422:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'The given data was invalid.'
+                  errors:
+                    password:
+                      - 'A senha deve conter pelo menos uma letra maiúscula, uma minúscula, um número e um caractere especial.'
+                      - 'A confirmação da senha não corresponde.'
+                properties:
+                  message:
+                    type: string
+                    example: 'The given data was invalid.'
+                  errors:
+                    type: object
+                    properties:
+                      password:
+                        type: array
+                        example:
+                          - 'A senha deve conter pelo menos uma letra maiúscula, uma minúscula, um número e um caractere especial.'
+                          - 'A confirmação da senha não corresponde.'
+                        items:
+                          type: string
+      tags:
+        - Cadastrar
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: 'Nome completo do usuário (máximo 100 caracteres). Must not be greater than 100 characters.'
+                  example: 'João da Silva'
+                  nullable: false
+                email:
+                  type: string
+                  description: 'E-mail válido e único. Must be a valid email address.'
+                  example: joao@email.com
+                  nullable: false
+                password:
+                  type: string
+                  description: 'Senha com no mínimo 8 caracteres, contendo ao menos uma letra maiúscula, uma minúscula, um número e um caractere especial. Must match the regex /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*#?&^()\-_=+])[A-Za-z\d@$!%*#?&^()\-_=+]{8,}$/. Must be at least 8 characters.'
+                  example: SenhaForte@123
+                  nullable: false
+                date_birth:
+                  type: string
+                  description: 'Data de nascimento no formato YYYY-MM-DD. Deve ser anterior à data atual. Must be a valid date. Must be a date before <code>today</code>.'
+                  example: '1990-05-21'
+                  nullable: false
+              required:
+                - name
+                - email
+                - password
+                - date_birth
+      security: []
+  /api/user:
+    get:
+      summary: ''
+      operationId: getApiUser
+      description: ''
+      parameters: []
+      responses:
+        401:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: Unauthenticated.
+                properties:
+                  message:
+                    type: string
+                    example: Unauthenticated.
+      tags:
+        - Endpoints
+      security: []
+  /api/ocurrences:
+    get:
+      summary: "Listar todas as ocorrências\n\nEste endpoint retorna uma lista de todas as ocorrências registradas."
+      operationId: listarTodasAsOcorrnciasEsteEndpointRetornaUmaListaDeTodasAsOcorrnciasRegistradas
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  ocurrences:
+                    -
+                      id: 1
+                      type_id: 2
+                      user_id: 8
+                      description: 'Buraco na rua que está dificultando o tráfego'
+                      location:
+                        type: Point
+                        coordinates:
+                          - -15.7801
+                          - -47.9292
+                      address_name: 'Rua das Palmeiras, 123'
+                      city: Belém
+                      state: PA
+                      country: Brasil
+                      created_at: '2025-07-10T20:30:00.000000Z'
+                      updated_at: '2025-07-10T20:30:00.000000Z'
+                properties:
+                  ocurrences:
+                    type: array
+                    example:
+                      -
+                        id: 1
+                        type_id: 2
+                        user_id: 8
+                        description: 'Buraco na rua que está dificultando o tráfego'
+                        location:
+                          type: Point
+                          coordinates:
+                            - -15.7801
+                            - -47.9292
+                        address_name: 'Rua das Palmeiras, 123'
+                        city: Belém
+                        state: PA
+                        country: Brasil
+                        created_at: '2025-07-10T20:30:00.000000Z'
+                        updated_at: '2025-07-10T20:30:00.000000Z'
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          example: 1
+                        type_id:
+                          type: integer
+                          example: 2
+                        user_id:
+                          type: integer
+                          example: 8
+                        description:
+                          type: string
+                          example: 'Buraco na rua que está dificultando o tráfego'
+                        location:
+                          type: object
+                          properties:
+                            type:
+                              type: string
+                              example: Point
+                            coordinates:
+                              type: array
+                              example:
+                                - -15.7801
+                                - -47.9292
+                              items:
+                                type: number
+                        address_name:
+                          type: string
+                          example: 'Rua das Palmeiras, 123'
+                        city:
+                          type: string
+                          example: Belém
+                        state:
+                          type: string
+                          example: PA
+                        country:
+                          type: string
+                          example: Brasil
+                        created_at:
+                          type: string
+                          example: '2025-07-10T20:30:00.000000Z'
+                        updated_at:
+                          type: string
+                          example: '2025-07-10T20:30:00.000000Z'
+      tags:
+        - Ocorrências
+      security: []
+    post:
+      summary: "Registrar nova ocorrência\n\nEste endpoint permite que usuários autenticados registrem uma nova ocorrência no sistema."
+      operationId: registrarNovaOcorrnciaEsteEndpointPermiteQueUsuriosAutenticadosRegistremUmaNovaOcorrnciaNoSistema
+      description: ''
+      parameters: []
+      responses:
+        201:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  ocurrence:
+                    id: 1
+                    type_id: 2
+                    user_id: 8
+                    description: 'Buraco na rua dificultando o tráfego'
+                    location:
+                      type: Point
+                      coordinates:
+                        - -15.7801
+                        - -47.9292
+                    address_name: 'Rua das Palmeiras, 123'
+                    city: Belém
+                    state: PA
+                    country: Brasil
+                    is_active: true
+                    created_at: '2025-07-10T20:30:00.000000Z'
+                    updated_at: '2025-07-10T20:30:00.000000Z'
+                properties:
+                  ocurrence:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 1
+                      type_id:
+                        type: integer
+                        example: 2
+                      user_id:
+                        type: integer
+                        example: 8
+                      description:
+                        type: string
+                        example: 'Buraco na rua dificultando o tráfego'
+                      location:
+                        type: object
+                        properties:
+                          type:
+                            type: string
+                            example: Point
+                          coordinates:
+                            type: array
+                            example:
+                              - -15.7801
+                              - -47.9292
+                            items:
+                              type: number
+                      address_name:
+                        type: string
+                        example: 'Rua das Palmeiras, 123'
+                      city:
+                        type: string
+                        example: Belém
+                      state:
+                        type: string
+                        example: PA
+                      country:
+                        type: string
+                        example: Brasil
+                      is_active:
+                        type: boolean
+                        example: true
+                      created_at:
+                        type: string
+                        example: '2025-07-10T20:30:00.000000Z'
+                      updated_at:
+                        type: string
+                        example: '2025-07-10T20:30:00.000000Z'
+        422:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'The given data was invalid.'
+                  errors:
+                    type_id:
+                      - 'O tipo informado não existe.'
+                    location:
+                      - 'O campo location deve ser um ponto GeoJSON válido.'
+                properties:
+                  message:
+                    type: string
+                    example: 'The given data was invalid.'
+                  errors:
+                    type: object
+                    properties:
+                      type_id:
+                        type: array
+                        example:
+                          - 'O tipo informado não existe.'
+                        items:
+                          type: string
+                      location:
+                        type: array
+                        example:
+                          - 'O campo location deve ser um ponto GeoJSON válido.'
+                        items:
+                          type: string
+      tags:
+        - Ocorrências
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                location:
+                  type: string
+                  description: 'Coordenadas geográficas no formato GeoJSON Point.'
+                  example:
+                    type: Point
+                    coordinates:
+                      - -15.7801
+                      - -47.9292
+                  nullable: false
+                type_id:
+                  type: string
+                  description: 'ID do tipo de ocorrência existente. The <code>id</code> of an existing record in the types_ocurrence table.'
+                  example: 2
+                  nullable: false
+                description:
+                  type: string
+                  description: 'Descrição do problema (opcional, até 250 caracteres). Must not be greater than 250 characters.'
+                  example: 'Buraco na rua dificultando o tráfego'
+                  nullable: true
+                address_name:
+                  type: string
+                  description: 'Endereço descritivo da ocorrência. Must not be greater than 500 characters.'
+                  example: 'Rua das Palmeiras, 123'
+                  nullable: false
+                city:
+                  type: string
+                  description: 'Cidade da ocorrência. Must not be greater than 250 characters.'
+                  example: Belém
+                  nullable: true
+                state:
+                  type: string
+                  description: 'Estado da ocorrência. Must not be greater than 250 characters.'
+                  example: PA
+                  nullable: true
+                country:
+                  type: string
+                  description: 'País da ocorrência. Must not be greater than 250 characters.'
+                  example: Brasil
+                  nullable: true
+              required:
+                - location
+                - type_id
+                - address_name
+  '/api/ocurrences/{ocurrence_id}':
+    delete:
+      summary: "Deletar ocorrência\n\nEste endpoint permite que um usuário autenticado exclua uma ocorrência existente."
+      operationId: deletarOcorrnciaEsteEndpointPermiteQueUmUsurioAutenticadoExcluaUmaOcorrnciaExistente
+      description: ''
+      parameters: []
+      responses:
+        204:
+          description: ''
+      tags:
+        - Ocorrências
+    parameters:
+      -
+        in: path
+        name: ocurrence_id
+        description: 'The ID of the ocurrence.'
+        example: 16
+        required: true
+        schema:
+          type: integer
+      -
+        in: path
+        name: ocurrence
+        description: 'ID da ocorrência a ser deletada.'
+        example: 1
+        required: true
+        schema:
+          type: integer
