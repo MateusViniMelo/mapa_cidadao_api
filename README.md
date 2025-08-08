@@ -77,8 +77,10 @@ git clone https://github.com/MateusViniMelo/mapa_cidadao_api.git
 cd mapa_cidadao_api
  ```
 
-#### 2. Subir containers
+
+#### 2. Copiar e Configurar Containers
  ```
+ cp docker-compose.example.yml docker-compose.yml
  docker compose up -d
   ```
 #### 3. Copiar e configurar
