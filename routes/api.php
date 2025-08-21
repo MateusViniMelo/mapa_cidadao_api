@@ -38,6 +38,6 @@ Route::get('/types-ocurrence', function () {
     $typesOcurrences = TypeOcurrence::all();
 
     return response()->json([
-        'types_ocurrences' => $typesOcurrences,
+        'types_ocurrence' => $typesOcurrences,
     ]);
 });

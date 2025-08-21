@@ -25,7 +25,7 @@ class TypeOcurrenceControllerFTest extends TestCase
         // Faz asserções
         $response->assertStatus(200)
             ->assertJsonStructure([
-                'types_ocurrences' => [
+                'types_ocurrence' => [
                     '*' => [
                         'id',
                         'name',
@@ -34,7 +34,7 @@ class TypeOcurrenceControllerFTest extends TestCase
                     ]
                 ]
             ])
-            ->assertJsonCount(5, 'types_ocurrences');
+            ->assertJsonCount(5, 'types_ocurrence');
     }
 
 

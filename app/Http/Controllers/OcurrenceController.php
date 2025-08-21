@@ -80,7 +80,7 @@ class OcurrenceController extends Controller
      *   }
      * }
      */
-    public function store(OcurrenceStoreRequets $request)
+    public function store(OcurrenceStoreRequets $request): JsonResponse
     {
         $ocurrenceStore = $request->getDto();
 
