@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Enums\TypeOcurrenceClosure;
 use App\Models\Ocurrence;
 use App\Models\TypeOcurrence;
 use App\Models\User;
@@ -12,6 +13,13 @@ use Tests\TestCase;
 class OcurrenceControllerFTest extends TestCase
 {
     use RefreshDatabase;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->artisan('db:seed');
+    }
 
     public function test_must_list_ocurrences(): void
     {
@@ -87,52 +95,164 @@ class OcurrenceControllerFTest extends TestCase
         $this->assertDatabaseMissing('ocurrences', $expectedResult);
     }
 
-    public function test_auth_user_can_delete_ocurrence()
+    public static function payloadsInactivateOcurrence(): array
+    {
+
+        return [
+            [
+                [
+                    'type_closure'         => TypeOcurrenceClosure::RESOLVED->value,
+                    'solution_description' => 'Tudo Certo',
+                ],
+            ],
+
+            [
+                [
+                    'type_closure' => TypeOcurrenceClosure::MISTAKE->value,
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider payloadsInactivateOcurrence
+     */
+    public function test_auth_user_can_inactivate_ocurrence(array $payload): void
     {
         $user      = User::factory()->create();
         $ocurrence = Ocurrence::factory()->create([
             'user_id' => $user->id,
         ]);
 
-        $response = $this->actingAs($user)->deleteJson("/api/ocurrences/{$ocurrence->id}");
+        $response = $this->actingAs($user)->postJson("/api/ocurrences/inactivate/{$ocurrence->id}", $payload);
 
-        $response->assertStatus(204);
+        $response->assertStatus(200);
 
-        $this->assertDatabaseMissing('ocurrences', [
-            'id' => $ocurrence->id,
-        ]);
+        if ($payload['type_closure'] === TypeOcurrenceClosure::MISTAKE->value) {
+            $this->assertDatabaseMissing('ocurrences', [
+                'id'      => $ocurrence->id,
+                'user_id' => $user->id,
+            ]);
+        } else {
+
+            $this->assertDatabaseHas('ocurrences', [
+                'id'                   => $ocurrence->id,
+                'is_active'            => false,
+                'type_closure'         => $payload['type_closure'],
+                'solution_description' => $payload['solution_description'] ?? null,
+            ]);
+        }
+
     }
 
-    public function test_other_auth_user_cannot_delete_ocurrence()
+    /**
+     * @dataProvider payloadsInactivateOcurrence
+     */
+    public function test_other_auth_user_can_not_inactivate_ocurrence(array $payload): void
     {
-        $user = User::factory()->create();
+        $user      = User::factory()->create();
         $otherUser = User::factory()->create();
         $ocurrence = Ocurrence::factory()->create([
             'user_id' => $user->id,
         ]);
 
-        $response = $this->actingAs($otherUser)->deleteJson("/api/ocurrences/{$ocurrence->id}");
+        $response = $this->actingAs($otherUser)->postJson("/api/ocurrences/inactivate/{$ocurrence->id}", $payload);
 
         $response->assertStatus(403);
 
-        $this->assertDatabaseHas('ocurrences', [
-            'id' => $ocurrence->id,
+        $this->assertDatabaseMissing('ocurrences', [
+            'id'                   => $ocurrence->id,
+            'is_active'            => false,
+            'type_closure'         => $payload['type_closure'],
+            'solution_description' => $payload['solution_description'] ?? null,
         ]);
     }
 
-    public function test_unauth_user_cannot_delete_ocurrence()
+    /**
+     * @dataProvider payloadsInactivateOcurrence
+     */
+    public function test_unauthenticated_user_can_not_inactivate_ocurrence(array $payload): void
     {
         $user      = User::factory()->create();
         $ocurrence = Ocurrence::factory()->create([
             'user_id' => $user->id,
         ]);
 
-        $response = $this->deleteJson("/api/ocurrences/{$ocurrence->id}");
+        $response = $this->postJson("/api/ocurrences/inactivate/{$ocurrence->id}", $payload);
 
         $response->assertStatus(401);
 
-        $this->assertDatabaseHas('ocurrences', [
-            'id' => $ocurrence->id,
+        $this->assertDatabaseMissing('ocurrences', [
+            'id'                   => $ocurrence->id,
+            'is_active'            => false,
+            'type_closure'         => TypeOcurrenceClosure::RESOLVED->value,
+            'solution_description' => 'Tudo Certo',
         ]);
+    }
+
+    public function test_auth_user_can_not_inactivate_ocurrence_that_is_already_inactivated(): void
+    {
+        $user      = User::factory()->create();
+        $ocurrence = Ocurrence::factory()->create([
+            'user_id'   => $user->id,
+            'is_active' => false,
+        ]);
+
+        $payload = [
+            'type_closure'         => TypeOcurrenceClosure::RESOLVED->value,
+            'solution_description' => 'Tudo Certo',
+        ];
+        $response = $this->actingAs($user)->postJson("/api/ocurrences/inactivate/{$ocurrence->id}", $payload);
+
+        $response->assertStatus(422);
+
+        $this->assertDatabaseMissing('ocurrences', [
+            'id'                   => $ocurrence->id,
+            'is_active'            => false,
+            'type_closure'         => TypeOcurrenceClosure::RESOLVED->value,
+            'solution_description' => 'Tudo Certo',
+        ]);
+    }
+
+    public static function payloadsInvalids(): array
+    {
+
+        return [
+            [
+                [
+                    'type_closure' => TypeOcurrenceClosure::RESOLVED->value,
+                ],
+            ],
+
+            [
+                [
+                    'type_closure' => 'teste',
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider payloadsInvalids
+     */
+    public function test_user_cannot_register_payload_error(array $payload)
+    {
+
+        $user      = User::factory()->create();
+        $ocurrence = Ocurrence::factory()->create([
+            'user_id' => $user->id,
+        ]);
+
+        $response = $this->actingAs($user)->postJson("/api/ocurrences/inactivate/{$ocurrence->id}", $payload);
+
+        $response->assertStatus(422);
+
+        $this->assertDatabaseMissing('ocurrences', [
+            'id'                   => $ocurrence->id,
+            'is_active'            => false,
+            'type_closure'         => $payload['type_closure'],
+            'solution_description' => $payload['solution_description'] ?? null,
+        ]);
+
     }
 }

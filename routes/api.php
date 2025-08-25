@@ -3,7 +3,6 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\OcurrenceController;
 use App\Http\Controllers\RegisterController;
-use App\Http\Controllers\TypeOcurrenceController;
 use App\Models\TypeOcurrence;
 use Illuminate\Support\Facades\Route;
 
@@ -27,13 +26,12 @@ Route::prefix('ocurrences')->group(function () {
 
     Route::middleware('auth:sanctum')->group(function () {
         Route::post('', [OcurrenceController::class, 'store']);
-        Route::delete('/{ocurrence}', [OcurrenceController::class, 'destroy']);
+        Route::post('inactivate/{ocurrence}', [OcurrenceController::class, 'inactiveOcurrence']);
     });
 
 });
 
 Route::get('/types-ocurrence', function () {
-
 
     $typesOcurrences = TypeOcurrence::all();
 

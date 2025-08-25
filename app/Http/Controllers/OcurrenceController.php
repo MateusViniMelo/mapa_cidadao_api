@@ -2,13 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\InactiveOcurrenceRequest;
 use App\Http\Requests\OcurrenceStoreRequets;
 use App\Models\Ocurrence;
+use App\Services\OcurrenceService;
 use Clickbar\Magellan\Data\Geometries\Point;
 use Illuminate\Http\JsonResponse;
 
 class OcurrenceController extends Controller
 {
+    public function __construct(private OcurrenceService $ocurrenceService) {}
+
     /**
      * @group Ocorrências
      * Listar todas as ocorrências
@@ -84,39 +88,51 @@ class OcurrenceController extends Controller
     {
         $ocurrenceStore = $request->getDto();
 
-        $locationFormated = Point::makeGeodetic($ocurrenceStore->location->coordinates[0], $ocurrenceStore->location->coordinates[1]);
-
-        $data = $ocurrenceStore->toArray();
-
-        $data['user_id'] = $request->user()->id;
-        $data['location'] = $locationFormated;
-
-        $ocurrence = Ocurrence::create($data);
+        $ocurrence = $this->ocurrenceService->create($ocurrenceStore, $request->user()->id);
 
         return response()->json(['ocurrence' => $ocurrence], 201);
     }
 
     /**
      * @group Ocorrências
-     * Deletar ocorrência
+     * Inativar ocorrência
      *
-     * Este endpoint permite que um usuário autenticado exclua uma ocorrência existente.
+     * Este endpoint permite que usuários autenticados inativem uma ocorrência existente, fornecendo uma descrição da solução e o tipo de resolução.
+     *
+     * @urlParam ocurrence required O ID da ocorrência a ser inativada. Example: 1
      *
      * @authenticated
      *
-     * @urlParam ocurrence int required ID da ocorrência a ser deletada. Example: 1
-     *
-     * @response 204 ""
+     * @response 200 {
+     *   "message": "Ocorrência inativada com sucesso."
+     * }
+     * @response 422 {
+     *   "message": "Tipo de resolução inválido."
+     * }
+     * @response 404 {
+     *   "message": "No query results for model [App\\Models\\Ocurrence] 999"
+     * }
      */
-    public function destroy(Ocurrence $ocurrence): JsonResponse
+    public function inactiveOcurrence(InactiveOcurrenceRequest $request, Ocurrence $ocurrence): JsonResponse
     {
-        if ($ocurrence->user_id === auth()->user()->id) {
-            $ocurrence->delete();
 
-            return response()->json(status: 204);
+        if ($ocurrence->is_active === false) {
+            return response()->json(['message' => 'Ocorrência já inativada.'], 422);
+        }
+
+        if ($ocurrence->user_id === $request->user()->id) {
+            try {
+                $inactiveOcurrence = $request->getDto();
+                $this->ocurrenceService->inactivate($ocurrence, $inactiveOcurrence);
+            } catch (\Exception $e) {
+                return response()->json('Não foi possível inativar a ocorrência.', 422);
+            }
+
+            return response()->json(['message' => 'Ocorrência inativada com sucesso.']);
 
         }
-        return response()->json(["message" => "Você não tem permissão para deletar esta ocorrência."], status: 403);
+
+        return response()->json(['message' => 'Você não tem permissão para inativar esta ocorrência.'], 403);
 
     }
 }

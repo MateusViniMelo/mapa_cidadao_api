@@ -79,7 +79,6 @@ INTRO,
         // Source Markdown will still be in resources/docs.
         'output_path' => 'public/docs',
 
-
     ],
 
     'laravel' => [

@@ -2,7 +2,6 @@
 
 namespace Tests\Feature;
 
-use App\Models\TypeOcurrence;
 use Database\Seeders\TypeOcurrenceSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -10,9 +9,6 @@ use Tests\TestCase;
 class TypeOcurrenceControllerFTest extends TestCase
 {
     use RefreshDatabase;
-
-
-
 
     public function test_returns_all_types_ocurrences()
     {
@@ -31,11 +27,9 @@ class TypeOcurrenceControllerFTest extends TestCase
                         'name',
                         'created_at',
                         'updated_at',
-                    ]
-                ]
+                    ],
+                ],
             ])
             ->assertJsonCount(5, 'types_ocurrence');
     }
-
-
 }

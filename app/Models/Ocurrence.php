@@ -7,6 +7,18 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+/**
+ * @property Point $location
+ * @property-read \App\Models\TypeOcurrence|null $type
+ * @property-read \App\Models\User|null $user
+ *
+ * @method static \Database\Factories\OcurrenceFactory                    factory($count = null, $state = [])
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Ocurrence newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Ocurrence newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Ocurrence query()
+ *
+ * @mixin \Eloquent
+ */
 class Ocurrence extends Model
 {
     use HasFactory;
@@ -23,6 +35,8 @@ class Ocurrence extends Model
         'city',
         'state',
         'country',
+        'solution_description',
+        'type_closure',
     ];
 
     protected $casts = [
