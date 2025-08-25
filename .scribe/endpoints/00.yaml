@@ -16,6 +16,7 @@ endpoints:
         Este endpoint cria um novo usuário e retorna um token de autenticação.
       description: ''
       authenticated: false
+      deprecated: false
       custom: []
     headers:
       Content-Type: application/json
@@ -27,7 +28,7 @@ endpoints:
     bodyParameters:
       name:
         name: name
-        description: 'Nome completo do usuário (máximo 100 caracteres). Must not be greater than 100 characters.'
+        description: 'Nome completo do usuário (máximo 100 caracteres). O campo value não pode ser superior a 100 caracteres.'
         required: true
         example: 'João da Silva'
         type: string
@@ -37,7 +38,7 @@ endpoints:
         custom: []
       email:
         name: email
-        description: 'E-mail válido e único. Must be a valid email address.'
+        description: 'E-mail válido e único. O campo value deve ser um endereço de e-mail válido.'
         required: true
         example: joao@email.com
         type: string
@@ -47,7 +48,7 @@ endpoints:
         custom: []
       password:
         name: password
-        description: 'Senha com no mínimo 8 caracteres, contendo ao menos uma letra maiúscula, uma minúscula, um número e um caractere especial. Must match the regex /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*#?&^()\-_=+])[A-Za-z\d@$!%*#?&^()\-_=+]{8,}$/. Must be at least 8 characters.'
+        description: 'Senha com no mínimo 8 caracteres, contendo ao menos uma letra maiúscula, uma minúscula, um número e um caractere especial. Must match the regex /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*#?&^()\-_=+])[A-Za-z\d@$!%*#?&^()\-_=+]{8,}$/. O campo value deve ter pelo menos 8 caracteres.'
         required: true
         example: SenhaForte@123
         type: string
@@ -57,7 +58,7 @@ endpoints:
         custom: []
       date_birth:
         name: date_birth
-        description: 'Data de nascimento no formato YYYY-MM-DD. Deve ser anterior à data atual. Must be a valid date. Must be a date before <code>today</code>.'
+        description: 'Data de nascimento no formato YYYY-MM-DD. Deve ser anterior ou igual à data atual menos 18 anos. O campo value deve ser uma data válida. O campo value deve ser uma data anterior ou igual a <code>2007-08-25</code>.'
         required: true
         example: '1990-05-21'
         type: string

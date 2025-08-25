@@ -3,7 +3,7 @@
 A Mapa Cidadão é uma API RESTful desenvolvida em Laravel, que permite aos usuários registrar, listar e gerenciar ocorrências urbanas de maneira simples, geolocalizada e segura.
 
 <aside>
-    <strong>Base URL</strong>: <code>http://localhost</code>
+    <strong>Base URL</strong>: <code>http://localhost:8000</code>
 </aside>
 
 O <strong>Mapa Cidadão</strong> é uma API RESTful desenvolvida com Laravel que permite o registro, a listagem e o gerenciamento de <strong>ocorrências urbanas</strong> geolocalizadas, como buracos em vias públicas, problemas de iluminação, lixo acumulado, entre outros.

@@ -18,6 +18,7 @@ endpoints:
         Este endpoint permite que o usuário realize login com e-mail e senha válidos.
       description: ''
       authenticated: false
+      deprecated: false
       custom: []
     headers:
       Content-Type: application/json
@@ -29,7 +30,7 @@ endpoints:
     bodyParameters:
       email:
         name: email
-        description: 'E-mail do usuário para login. Must be a valid email address.'
+        description: 'E-mail do usuário para login. O campo value deve ser um endereço de e-mail válido.'
         required: true
         example: usuario@email.com
         type: string
@@ -99,6 +100,7 @@ endpoints:
         Este endpoint retorna os dados do usuário logado e um novo token de acesso.
       description: ''
       authenticated: true
+      deprecated: false
       custom: []
     headers:
       Authorization: 'Bearer Bearer {YOUR_AUTH_TOKEN}'
@@ -153,6 +155,7 @@ endpoints:
         Este endpoint revoga o token de acesso atual do usuário.
       description: ''
       authenticated: true
+      deprecated: false
       custom: []
     headers:
       Authorization: 'Bearer Bearer {YOUR_AUTH_TOKEN}'

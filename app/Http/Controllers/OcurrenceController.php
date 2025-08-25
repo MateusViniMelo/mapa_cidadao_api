@@ -15,9 +15,9 @@ class OcurrenceController extends Controller
 
     /**
      * @group Ocorrências
-     * Listar todas as ocorrências
+     * Listar todas as ocorrências ativas
      *
-     * Este endpoint retorna uma lista de todas as ocorrências registradas.
+     * Este endpoint retorna uma lista de todas as ocorrências ativas registradas.
      *
      * @response 200 {
      *   "ocurrences": [
@@ -42,7 +42,7 @@ class OcurrenceController extends Controller
      */
     public function index(): JsonResponse
     {
-        $ocurrences = Ocurrence::all();
+        $ocurrences = Ocurrence::where(['is_active' => true])->get();
 
         return response()->json([
             'ocurrences' => $ocurrences,
@@ -97,22 +97,55 @@ class OcurrenceController extends Controller
      * @group Ocorrências
      * Inativar ocorrência
      *
-     * Este endpoint permite que usuários autenticados inativem uma ocorrência existente, fornecendo uma descrição da solução e o tipo de resolução.
-     *
-     * @urlParam ocurrence required O ID da ocorrência a ser inativada. Example: 1
+     * Este endpoint permite que um usuário autenticado inative uma ocorrência que ele mesmo registrou.
+     * A ocorrência não é removida do banco, apenas marcada como inativa.
      *
      * @authenticated
+     *
+     * @urlParam ocurrence int required O ID da ocorrência que será inativada. Exemplo: 1
+     *
+     * @bodyParam type_closure string required Tipo de encerramento da ocorrência.
+     * Valores aceitos:
+     * - resolved → Ocorrência resolvida
+     * - mistake → Ocorrência criada por engano
+     * Exemplo: "resolved"
+     *
+     * @bodyParam solution_description string Condicional. Obrigatório se o type_closure for "resolved".
+     * Máximo de 500 caracteres.
+     * Exemplo: "Problema resolvido pela companhia responsável."
      *
      * @response 200 {
      *   "message": "Ocorrência inativada com sucesso."
      * }
-     * @response 422 {
-     *   "message": "Tipo de resolução inválido."
+     *
+     * @response 403 {
+     *   "message": "Você não tem permissão para inativar esta ocorrência."
      * }
-     * @response 404 {
-     *   "message": "No query results for model [App\\Models\\Ocurrence] 999"
+     *
+     * @response 422 {
+     *   "message": "Ocorrência já inativada."
+     * }
+     *
+     * @response 422 {
+     *   "message": "Não foi possível inativar a ocorrência."
+     * }
+     *
+     * @response 422 {
+     *   "message": "The given data was invalid.",
+     *   "errors": {
+     *     "type_closure": ["O campo type_closure é obrigatório."],
+     *     "solution_description": ["O campo solution_description é obrigatório quando type_closure é resolved."]
+     *   }
+     * }
+     *
+     * @example request
+     * POST /api/ocurrences/1/inactivate
+     * {
+     *   "type_closure": "resolved",
+     *   "solution_description": "Problema resolvido pela equipe de manutenção."
      * }
      */
+
     public function inactiveOcurrence(InactiveOcurrenceRequest $request, Ocurrence $ocurrence): JsonResponse
     {
 

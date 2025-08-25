@@ -16,6 +16,7 @@ endpoints:
         Este endpoint retorna uma lista de todas as ocorrências registradas.
       description: ''
       authenticated: false
+      deprecated: false
       custom: []
     headers:
       Content-Type: application/json
@@ -75,6 +76,7 @@ endpoints:
         Este endpoint permite que usuários autenticados registrem uma nova ocorrência no sistema.
       description: ''
       authenticated: true
+      deprecated: false
       custom: []
     headers:
       Authorization: 'Bearer Bearer {YOUR_AUTH_TOKEN}'
@@ -111,7 +113,7 @@ endpoints:
         custom: []
       description:
         name: description
-        description: 'Descrição do problema (opcional, até 250 caracteres). Must not be greater than 250 characters.'
+        description: 'Descrição do problema (opcional, até 250 caracteres). O campo value não pode ser superior a 250 caracteres.'
         required: false
         example: 'Buraco na rua dificultando o tráfego'
         type: string
@@ -121,7 +123,7 @@ endpoints:
         custom: []
       address_name:
         name: address_name
-        description: 'Endereço descritivo da ocorrência. Must not be greater than 500 characters.'
+        description: 'Endereço descritivo da ocorrência. O campo value não pode ser superior a 500 caracteres.'
         required: true
         example: 'Rua das Palmeiras, 123'
         type: string
@@ -131,7 +133,7 @@ endpoints:
         custom: []
       city:
         name: city
-        description: 'Cidade da ocorrência. Must not be greater than 250 characters.'
+        description: 'Cidade da ocorrência. O campo value não pode ser superior a 250 caracteres.'
         required: false
         example: Belém
         type: string
@@ -141,7 +143,7 @@ endpoints:
         custom: []
       state:
         name: state
-        description: 'Estado da ocorrência. Must not be greater than 250 characters.'
+        description: 'Estado da ocorrência. O campo value não pode ser superior a 250 caracteres.'
         required: false
         example: PA
         type: string
@@ -151,7 +153,7 @@ endpoints:
         custom: []
       country:
         name: country
-        description: 'País da ocorrência. Must not be greater than 250 characters.'
+        description: 'País da ocorrência. O campo value não pode ser superior a 250 caracteres.'
         required: false
         example: Brasil
         type: string
@@ -222,19 +224,21 @@ endpoints:
     custom: []
   -
     httpMethods:
-      - DELETE
-    uri: 'api/ocurrences/{ocurrence_id}'
+      - POST
+    uri: 'api/ocurrences/inactivate/{ocurrence_id}'
     metadata:
       groupName: Ocorrências
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
       title: |-
-        Deletar ocorrência
+        Inativar ocorrência
 
-        Este endpoint permite que um usuário autenticado exclua uma ocorrência existente.
+        Este endpoint permite que um usuário autenticado inative uma ocorrência que ele mesmo registrou.
+        A ocorrência não é removida do banco, apenas marcada como inativa.
       description: ''
       authenticated: true
+      deprecated: false
       custom: []
     headers:
       Authorization: 'Bearer Bearer {YOUR_AUTH_TOKEN}'
@@ -253,26 +257,99 @@ endpoints:
         custom: []
       ocurrence:
         name: ocurrence
-        description: 'ID da ocorrência a ser deletada.'
+        description: 'O ID da ocorrência que será inativada. Exemplo: 1'
         required: true
-        example: 1
+        example: 16
         type: integer
         enumValues: []
-        exampleWasSpecified: true
+        exampleWasSpecified: false
         nullable: false
         custom: []
     cleanUrlParameters:
       ocurrence_id: 16
-      ocurrence: 1
+      ocurrence: 16
     queryParameters: []
     cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
+    bodyParameters:
+      type_closure:
+        name: type_closure
+        description: |-
+          Tipo de encerramento da ocorrência.
+          Valores aceitos:
+          - resolved → Ocorrência resolvida
+          - mistake → Ocorrência criada por engano
+          Exemplo: "resolved"
+        required: true
+        example: architecto
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+      solution_description:
+        name: solution_description
+        description: |-
+          Condicional. Obrigatório se o type_closure for "resolved".
+          Máximo de 500 caracteres.
+          Exemplo: "Problema resolvido pela companhia responsável."
+        required: false
+        example: architecto
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+    cleanBodyParameters:
+      type_closure: architecto
+      solution_description: architecto
     fileParameters: []
     responses:
       -
-        status: 204
-        content: '""'
+        status: 200
+        content: |-
+          {
+            "message": "Ocorrência inativada com sucesso."
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 403
+        content: |-
+          {
+            "message": "Você não tem permissão para inativar esta ocorrência."
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 422
+        content: |-
+          {
+            "message": "Ocorrência já inativada."
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 422
+        content: |-
+          {
+            "message": "Não foi possível inativar a ocorrência."
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 422
+        content: |-
+          {
+            "message": "The given data was invalid.",
+            "errors": {
+              "type_closure": ["O campo type_closure é obrigatório."],
+              "solution_description": ["O campo solution_description é obrigatório quando type_closure é resolved."]
+            }
+          }
         headers: []
         description: ''
         custom: []
