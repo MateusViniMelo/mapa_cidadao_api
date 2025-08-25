@@ -6,4 +6,5 @@ enum TypeOcurrenceClosure: string
 {
     case RESOLVED = 'resolved';
     case MISTAKE  = 'mistake';
+    case OTHER    = 'other';
 }

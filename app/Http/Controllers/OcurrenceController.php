@@ -108,28 +108,24 @@ class OcurrenceController extends Controller
      * Valores aceitos:
      * - resolved → Ocorrência resolvida
      * - mistake → Ocorrência criada por engano
+     * - other → Finalizada por outro motivo
      * Exemplo: "resolved"
-     *
-     * @bodyParam solution_description string Condicional. Obrigatório se o type_closure for "resolved".
+     * @bodyParam solution_description string Condicional. Obrigatório se o type_closure for "resolved" ou "other".
      * Máximo de 500 caracteres.
      * Exemplo: "Problema resolvido pela companhia responsável."
      *
      * @response 200 {
      *   "message": "Ocorrência inativada com sucesso."
      * }
-     *
      * @response 403 {
      *   "message": "Você não tem permissão para inativar esta ocorrência."
      * }
-     *
      * @response 422 {
      *   "message": "Ocorrência já inativada."
      * }
-     *
      * @response 422 {
      *   "message": "Não foi possível inativar a ocorrência."
      * }
-     *
      * @response 422 {
      *   "message": "The given data was invalid.",
      *   "errors": {
@@ -145,7 +141,6 @@ class OcurrenceController extends Controller
      *   "solution_description": "Problema resolvido pela equipe de manutenção."
      * }
      */
-
     public function inactiveOcurrence(InactiveOcurrenceRequest $request, Ocurrence $ocurrence): JsonResponse
     {
 

@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('ocurrences', function (Blueprint $table) {
-            $table->enum('type_closure', ['resolved', 'mistake'])->nullable();
+            $table->enum('type_closure', ['resolved', 'mistake', 'other'])->nullable();
             $table->text('solution_description')->nullable();
         });
     }

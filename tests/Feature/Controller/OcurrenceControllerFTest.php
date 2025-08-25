@@ -37,7 +37,6 @@ class OcurrenceControllerFTest extends TestCase
 
         $response->assertJsonPath('ocurrences.*.is_active', [true, true, true]);
 
-
         $this->assertEmpty(collect($response->json('ocurrences'))->where('is_active', false));
         $this->assertCount(3, $response->json('ocurrences'));
 
@@ -50,15 +49,15 @@ class OcurrenceControllerFTest extends TestCase
 
         $payload = [
             'location' => [
-                'type' => 'Point',
+                'type'        => 'Point',
                 'coordinates' => [-47.9292, -15.7801],
             ],
-            'type_id' => $type->id,
-            'description' => 'Buraco na rua que está dificultando o tráfego',
+            'type_id'      => $type->id,
+            'description'  => 'Buraco na rua que está dificultando o tráfego',
             'address_name' => 'Rua das Palmeiras, 123',
-            'city' => 'Belém',
-            'state' => 'PA',
-            'country' => 'Brasil',
+            'city'         => 'Belém',
+            'state'        => 'PA',
+            'country'      => 'Brasil',
         ];
 
         $response = $this->actingAs($user)->postJson('/api/ocurrences', $payload);
@@ -69,7 +68,7 @@ class OcurrenceControllerFTest extends TestCase
             ]);
         $expectedResult = $payload;
 
-        $expectedResult['user_id'] = $user->id;
+        $expectedResult['user_id']  = $user->id;
         $expectedResult['location'] = Point::makeGeodetic($payload['location']['coordinates'][0], $payload['location']['coordinates'][1]);
         $this->assertDatabaseHas('ocurrences', $expectedResult);
     }
@@ -81,15 +80,15 @@ class OcurrenceControllerFTest extends TestCase
 
         $payload = [
             'location' => [
-                'type' => 'Point',
+                'type'        => 'Point',
                 'coordinates' => [-47.9292, -15.7801],
             ],
-            'type_id' => $type->id,
-            'description' => 'Buraco na rua que está dificultando o tráfego',
+            'type_id'      => $type->id,
+            'description'  => 'Buraco na rua que está dificultando o tráfego',
             'address_name' => 'Rua das Palmeiras, 123',
-            'city' => 'Belém',
-            'state' => 'PA',
-            'country' => 'Brasil',
+            'city'         => 'Belém',
+            'state'        => 'PA',
+            'country'      => 'Brasil',
         ];
 
         $response = $this->postJson('/api/ocurrences', $payload);
@@ -98,7 +97,7 @@ class OcurrenceControllerFTest extends TestCase
 
         $expectedResult = $payload;
 
-        $expectedResult['user_id'] = $user->id;
+        $expectedResult['user_id']  = $user->id;
         $expectedResult['location'] = Point::makeGeodetic($payload['location']['coordinates'][0], $payload['location']['coordinates'][1]);
         $this->assertDatabaseMissing('ocurrences', $expectedResult);
     }
@@ -109,7 +108,7 @@ class OcurrenceControllerFTest extends TestCase
         return [
             [
                 [
-                    'type_closure' => TypeOcurrenceClosure::RESOLVED->value,
+                    'type_closure'         => TypeOcurrenceClosure::RESOLVED->value,
                     'solution_description' => 'Tudo Certo',
                 ],
             ],
@@ -117,6 +116,12 @@ class OcurrenceControllerFTest extends TestCase
             [
                 [
                     'type_closure' => TypeOcurrenceClosure::MISTAKE->value,
+                ],
+            ],
+            [
+                [
+                    'type_closure'         => TypeOcurrenceClosure::OTHER->value,
+                    'solution_description' => 'Tudo Certo',
                 ],
             ],
         ];
@@ -127,7 +132,7 @@ class OcurrenceControllerFTest extends TestCase
      */
     public function test_auth_user_can_inactivate_ocurrence(array $payload): void
     {
-        $user = User::factory()->create();
+        $user      = User::factory()->create();
         $ocurrence = Ocurrence::factory()->create([
             'user_id' => $user->id,
         ]);
@@ -138,15 +143,15 @@ class OcurrenceControllerFTest extends TestCase
 
         if ($payload['type_closure'] === TypeOcurrenceClosure::MISTAKE->value) {
             $this->assertDatabaseMissing('ocurrences', [
-                'id' => $ocurrence->id,
+                'id'      => $ocurrence->id,
                 'user_id' => $user->id,
             ]);
         } else {
 
             $this->assertDatabaseHas('ocurrences', [
-                'id' => $ocurrence->id,
-                'is_active' => false,
-                'type_closure' => $payload['type_closure'],
+                'id'                   => $ocurrence->id,
+                'is_active'            => false,
+                'type_closure'         => $payload['type_closure'],
                 'solution_description' => $payload['solution_description'] ?? null,
             ]);
         }
@@ -158,7 +163,7 @@ class OcurrenceControllerFTest extends TestCase
      */
     public function test_other_auth_user_can_not_inactivate_ocurrence(array $payload): void
     {
-        $user = User::factory()->create();
+        $user      = User::factory()->create();
         $otherUser = User::factory()->create();
         $ocurrence = Ocurrence::factory()->create([
             'user_id' => $user->id,
@@ -169,9 +174,9 @@ class OcurrenceControllerFTest extends TestCase
         $response->assertStatus(403);
 
         $this->assertDatabaseMissing('ocurrences', [
-            'id' => $ocurrence->id,
-            'is_active' => false,
-            'type_closure' => $payload['type_closure'],
+            'id'                   => $ocurrence->id,
+            'is_active'            => false,
+            'type_closure'         => $payload['type_closure'],
             'solution_description' => $payload['solution_description'] ?? null,
         ]);
     }
@@ -181,7 +186,7 @@ class OcurrenceControllerFTest extends TestCase
      */
     public function test_unauthenticated_user_can_not_inactivate_ocurrence(array $payload): void
     {
-        $user = User::factory()->create();
+        $user      = User::factory()->create();
         $ocurrence = Ocurrence::factory()->create([
             'user_id' => $user->id,
         ]);
@@ -191,23 +196,23 @@ class OcurrenceControllerFTest extends TestCase
         $response->assertStatus(401);
 
         $this->assertDatabaseMissing('ocurrences', [
-            'id' => $ocurrence->id,
-            'is_active' => false,
-            'type_closure' => TypeOcurrenceClosure::RESOLVED->value,
+            'id'                   => $ocurrence->id,
+            'is_active'            => false,
+            'type_closure'         => TypeOcurrenceClosure::RESOLVED->value,
             'solution_description' => 'Tudo Certo',
         ]);
     }
 
     public function test_auth_user_can_not_inactivate_ocurrence_that_is_already_inactivated(): void
     {
-        $user = User::factory()->create();
+        $user      = User::factory()->create();
         $ocurrence = Ocurrence::factory()->create([
-            'user_id' => $user->id,
+            'user_id'   => $user->id,
             'is_active' => false,
         ]);
 
         $payload = [
-            'type_closure' => TypeOcurrenceClosure::RESOLVED->value,
+            'type_closure'         => TypeOcurrenceClosure::RESOLVED->value,
             'solution_description' => 'Tudo Certo',
         ];
         $response = $this->actingAs($user)->postJson("/api/ocurrences/inactivate/{$ocurrence->id}", $payload);
@@ -215,9 +220,9 @@ class OcurrenceControllerFTest extends TestCase
         $response->assertStatus(422);
 
         $this->assertDatabaseMissing('ocurrences', [
-            'id' => $ocurrence->id,
-            'is_active' => false,
-            'type_closure' => TypeOcurrenceClosure::RESOLVED->value,
+            'id'                   => $ocurrence->id,
+            'is_active'            => false,
+            'type_closure'         => TypeOcurrenceClosure::RESOLVED->value,
             'solution_description' => 'Tudo Certo',
         ]);
     }
@@ -237,6 +242,11 @@ class OcurrenceControllerFTest extends TestCase
                     'type_closure' => 'teste',
                 ],
             ],
+            [
+                [
+                    'type_closure' => TypeOcurrenceClosure::OTHER->value,
+                ],
+            ],
         ];
     }
 
@@ -246,7 +256,7 @@ class OcurrenceControllerFTest extends TestCase
     public function test_user_cannot_register_payload_error(array $payload)
     {
 
-        $user = User::factory()->create();
+        $user      = User::factory()->create();
         $ocurrence = Ocurrence::factory()->create([
             'user_id' => $user->id,
         ]);
@@ -256,9 +266,9 @@ class OcurrenceControllerFTest extends TestCase
         $response->assertStatus(422);
 
         $this->assertDatabaseMissing('ocurrences', [
-            'id' => $ocurrence->id,
-            'is_active' => false,
-            'type_closure' => $payload['type_closure'],
+            'id'                   => $ocurrence->id,
+            'is_active'            => false,
+            'type_closure'         => $payload['type_closure'],
             'solution_description' => $payload['solution_description'] ?? null,
         ]);
 

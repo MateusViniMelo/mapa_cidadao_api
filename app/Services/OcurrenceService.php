@@ -28,15 +28,21 @@ class OcurrenceService
     public function inactivate(Ocurrence $ocurrence, InactiveOcurrenceRequestDTO $dto): Model
     {
         match ($dto->type_closure) {
-            TypeOcurrenceClosure::RESOLVED->value => $ocurrence->update([
-                'type_closure'         => $dto->type_closure,
-                'is_active'            => false,
-                'solution_description' => $dto->solution_description,
-            ]),
-            TypeOcurrenceClosure::MISTAKE->value => $ocurrence->delete(),
-            default                              => abort(422, 'Tipo de resolução inválido.')
+            TypeOcurrenceClosure::RESOLVED->value => $this->closeOcurrenceWithDescription($ocurrence, $dto->type_closure, $dto->solution_description),
+            TypeOcurrenceClosure::MISTAKE->value  => $ocurrence->delete(),
+            TypeOcurrenceClosure::OTHER->value    => $this->closeOcurrenceWithDescription($ocurrence, $dto->type_closure, $dto->solution_description),
+            default                               => abort(404, 'Não existe esse tipo de encerramento.')
         };
 
         return $ocurrence;
+    }
+
+    private function closeOcurrenceWithDescription(Ocurrence $ocurrence, string $type, string $solutionDescription): void
+    {
+        $ocurrence->update([
+            'type_closure'         => $type,
+            'is_active'            => false,
+            'solution_description' => $solutionDescription,
+        ]);
     }
 }

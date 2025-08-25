@@ -5,6 +5,7 @@ namespace App\Http\Requests;
 use App\DTOs\InactiveOcurrenceRequestDTO;
 use App\Enums\TypeOcurrenceClosure;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class InactiveOcurrenceRequest extends FormRequest
 {
@@ -23,10 +24,19 @@ class InactiveOcurrenceRequest extends FormRequest
      */
     public function rules(): array
     {
-
         return [
-            'type_closure'         => 'required|in:'.implode(',', array_map(fn ($value) => $value->value, TypeOcurrenceClosure::cases())),
-            'solution_description' => 'required_if:type_closure,'.TypeOcurrenceClosure::RESOLVED->value.'|string|max:500',
+            'type_closure' => [
+                'required',
+                Rule::in(array_map(fn ($value) => $value->value, TypeOcurrenceClosure::cases())),
+            ],
+            'solution_description' => [
+                'string',
+                'max:500',
+                Rule::requiredIf(fn () => in_array($this->input('type_closure'), [
+                    TypeOcurrenceClosure::RESOLVED->value,
+                    TypeOcurrenceClosure::OTHER->value,
+                ])),
+            ],
         ];
     }
 
