@@ -8,6 +8,7 @@ use App\Models\Ocurrence;
 use App\Services\OcurrenceService;
 use Clickbar\Magellan\Data\Geometries\Point;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Log;
 
 class OcurrenceController extends Controller
 {
@@ -153,6 +154,7 @@ class OcurrenceController extends Controller
                 $inactiveOcurrence = $request->getDto();
                 $this->ocurrenceService->inactivate($ocurrence, $inactiveOcurrence);
             } catch (\Exception $e) {
+                Log::error('Erro ao inativar ocorrência', ['exception' => $e]);
                 return response()->json('Não foi possível inativar a ocorrência.', 422);
             }
 
