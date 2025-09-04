@@ -28,7 +28,7 @@ class OcurrenceStoreRequets extends FormRequest
             'location'     => ['required', new GeometryGeojsonRule([Point::class])],
             'type_id'      => 'required|exists:types_ocurrence,id',
             'description'  => 'nullable|string|max:250',
-            'address_name' => 'required|string|max:500',
+            'address_name' => 'nullable|string|max:500',
             'city'         => 'nullable|string|max:250',
             'state'        => 'nullable|string|max:250',
             'country'      => 'nullable|string|max:250',

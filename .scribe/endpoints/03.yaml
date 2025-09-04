@@ -27,11 +27,8 @@ endpoints:
     fileParameters: []
     responses:
       -
-        status: 500
-        content: |-
-          {
-              "message": "Server Error"
-          }
+        status: 200
+        content: '{"types_ocurrence":[{"id":1,"name":"Problema de Ilumina\u00e7\u00e3o","created_at":"2025-08-28T23:53:16.000000Z","updated_at":"2025-08-28T23:53:16.000000Z"},{"id":2,"name":"Problema de Pavimenta\u00e7\u00e3o","created_at":"2025-08-28T23:53:16.000000Z","updated_at":"2025-08-28T23:53:16.000000Z"},{"id":3,"name":"Alagamento","created_at":"2025-08-28T23:53:16.000000Z","updated_at":"2025-08-28T23:53:16.000000Z"},{"id":4,"name":"Ac\u00famulo de Lixo","created_at":"2025-08-28T23:53:16.000000Z","updated_at":"2025-08-28T23:53:16.000000Z"},{"id":5,"name":"Falta de Pavimenta\u00e7\u00e3o","created_at":"2025-08-28T23:53:16.000000Z","updated_at":"2025-08-28T23:53:16.000000Z"}]}'
         headers:
           cache-control: 'no-cache, private'
           content-type: application/json

@@ -60,7 +60,7 @@ endpoints:
         custom: []
       date_birth:
         name: date_birth
-        description: 'Data de nascimento no formato YYYY-MM-DD. Deve ser anterior ou igual à data atual menos 18 anos. O campo value deve ser uma data válida. O campo value deve ser uma data anterior ou igual a <code>2007-08-25</code>.'
+        description: 'Data de nascimento no formato YYYY-MM-DD. Deve ser anterior ou igual à data atual menos 18 anos. O campo value deve ser uma data válida. O campo value deve ser uma data anterior ou igual a <code>2007-09-04</code>.'
         required: true
         example: '1990-05-21'
         type: string

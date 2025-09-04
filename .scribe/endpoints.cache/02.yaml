@@ -13,9 +13,9 @@ endpoints:
       subgroup: ''
       subgroupDescription: ''
       title: |-
-        Listar todas as ocorrências
+        Listar todas as ocorrências ativas
 
-        Este endpoint retorna uma lista de todas as ocorrências registradas.
+        Este endpoint retorna uma lista de todas as ocorrências ativas registradas.
       description: ''
       authenticated: false
       deprecated: false
@@ -251,7 +251,7 @@ endpoints:
         name: ocurrence_id
         description: 'The ID of the ocurrence.'
         required: true
-        example: 16
+        example: 1
         type: integer
         enumValues: []
         exampleWasSpecified: false
@@ -268,7 +268,7 @@ endpoints:
         nullable: false
         custom: []
     cleanUrlParameters:
-      ocurrence_id: 16
+      ocurrence_id: 1
       ocurrence: 16
     queryParameters: []
     cleanQueryParameters: []
@@ -280,6 +280,7 @@ endpoints:
           Valores aceitos:
           - resolved → Ocorrência resolvida
           - mistake → Ocorrência criada por engano
+          - other → Finalizada por outro motivo
           Exemplo: "resolved"
         required: true
         example: architecto
@@ -291,7 +292,7 @@ endpoints:
       solution_description:
         name: solution_description
         description: |-
-          Condicional. Obrigatório se o type_closure for "resolved".
+          Condicional. Obrigatório se o type_closure for "resolved" ou "other".
           Máximo de 500 caracteres.
           Exemplo: "Problema resolvido pela companhia responsável."
         required: false
