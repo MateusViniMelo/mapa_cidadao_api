@@ -351,7 +351,27 @@ class OcurrenceControllerFTest extends TestCase
         ]);
         $jsonStructureExpected = [
             'data' => [
-                '*' => ['id', 'type_id', 'location', 'type_id', 'user_id', 'description', 'address_name', 'city', 'state', 'country', 'is_active', 'solution_description', 'resolution_date', 'type_closure', 'created_at', 'updated_at'],
+
+                '*' => [
+                    'id',
+                    'type_id',
+                    'location',
+                    'type_id',
+                    'user_id',
+                    'description',
+                    'address_name',
+                    'city',
+                    'state',
+                    'country',
+                    'is_active',
+                    'solution_description',
+                    'resolution_date',
+                    'type_closure',
+                    'created_at',
+                    'updated_at',
+                    'type' => ['id', 'name', 'created_at', 'updated_at'],
+                ],
+
             ],
             'first_page_url',
             'from',
@@ -366,14 +386,11 @@ class OcurrenceControllerFTest extends TestCase
             'prev_page_url',
             'to',
             'total',
-            'type' => [
-                'id', 'name',
-            ],
+
         ];
 
         $responsePage1 = $this->actingAs($user)->getJson('/api/ocurrences/my-ocurrences?page=1');
 
-        print_r($responsePage1->getContent());
         $responsePage1->assertStatus(200)
             ->assertJsonStructure($jsonStructureExpected);
 
