@@ -13,7 +13,9 @@ use Request;
 
 class OcurrenceController extends Controller
 {
-    public function __construct(private OcurrenceService $ocurrenceService) {}
+    public function __construct(
+        private OcurrenceService $ocurrenceService
+    ) {}
 
     /**
      * @group Ocorrências
@@ -42,9 +44,11 @@ class OcurrenceController extends Controller
      *   ]
      * }
      */
-    public function index(): JsonResponse
+    public function index(Request $request): JsonResponse
     {
-        $ocurrences = Ocurrence::where(['is_active' => true])->get();
+
+        // Verifica se o usuário está autenticado, mas não bloqueia o acesso se não estiver
+        $ocurrences = Ocurrence::where('is_active', true)->get();
 
         return response()->json([
             'ocurrences' => $ocurrences,
@@ -143,7 +147,7 @@ class OcurrenceController extends Controller
      *   "solution_description": "Problema resolvido pela equipe de manutenção."
      * }
      */
-    public function inactiveOcurrence(InactiveOcurrenceRequest $request, Ocurrence $ocurrence): JsonResponse
+    public function inactive(InactiveOcurrenceRequest $request, Ocurrence $ocurrence): JsonResponse
     {
 
         if ($ocurrence->is_active === false) {
@@ -225,5 +229,18 @@ class OcurrenceController extends Controller
         $ocurrences = Ocurrence::where(['user_id' => auth()->id()])->orderByDesc('created_at')->paginate(10);
 
         return response()->json($ocurrences);
+    }
+
+    public function likeOrDislike(Ocurrence $ocurrence): JsonResponse
+    {
+
+        $data = $this->ocurrenceService->likeOrDislikeOcurrence($ocurrence, auth()->id());
+
+        if ($data) {
+            return response()->json(['message' => 'Ocorrência curtida com sucesso.', 'ocurrence' => $ocurrence], 201);
+        }
+
+        return response()->json(['message' => 'Curtida removida com sucesso.', 'ocurrence' => $ocurrence], 200);
+
     }
 }

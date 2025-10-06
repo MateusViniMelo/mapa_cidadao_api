@@ -5,6 +5,7 @@ namespace App\Services;
 use App\DTOs\InactiveOcurrenceRequestDTO;
 use App\DTOs\OcurrenceStoreRequestDTO;
 use App\Enums\TypeOcurrenceClosure;
+use App\Models\LikeOcurrence;
 use App\Models\Ocurrence;
 use Clickbar\Magellan\Data\Geometries\Point;
 use DateTime;
@@ -36,6 +37,23 @@ class OcurrenceService
         };
 
         return $ocurrence;
+    }
+
+    public function likeOrDislikeOcurrence(Ocurrence $ocurrence, int $userId): ?Model
+    {
+        $like = LikeOcurrence::where('user_id', $userId)->where('ocurrence_id', $ocurrence->id)->first();
+        if ($like) {
+
+            $like->delete();
+
+            return null;
+
+        }
+
+        return LikeOcurrence::create([
+            'user_id'      => $userId,
+            'ocurrence_id' => $ocurrence->id,
+        ]);
     }
 
     private function closeOcurrenceWithDescription(Ocurrence $ocurrence, string $type, string $solutionDescription, ?DateTime $resolutionDate): void

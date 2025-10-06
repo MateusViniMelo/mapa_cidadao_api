@@ -7,6 +7,7 @@ use App\Models\Ocurrence;
 use App\Models\TypeOcurrence;
 use App\Models\User;
 use Clickbar\Magellan\Data\Geometries\Point;
+use Database\Factories\LikeOcurrenceFactory;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -23,7 +24,7 @@ class OcurrenceControllerFTest extends TestCase
 
     public function test_must_list_ocurrences(): void
     {
-        $ocurrenceActive = Ocurrence::factory(['is_active' => true])->count(3)->create();
+        Ocurrence::factory(['is_active' => true])->count(3)->create();
         Ocurrence::factory(['is_active' => false])->count(3)->create();
 
         $response = $this->getJson('/api/ocurrences');
@@ -31,7 +32,26 @@ class OcurrenceControllerFTest extends TestCase
         $response->assertStatus(200)
             ->assertJsonStructure([
                 'ocurrences' => [
-                    '*' => ['id', 'type_id', 'user_id', 'description', 'address_name', 'city', 'state', 'country', 'is_active', 'created_at', 'updated_at'],
+                    '*' => [
+                        'id',
+                        'type_id',
+                        'location',
+                        'type_id',
+                        'user_id',
+                        'description',
+                        'address_name',
+                        'city',
+                        'state',
+                        'country',
+                        'is_active',
+                        'solution_description',
+                        'resolution_date',
+                        'type_closure',
+                        'created_at',
+                        'updated_at',
+                        'type' => ['id', 'name', 'created_at', 'updated_at'],
+                        'likes_count',
+                    ],
                 ],
             ]);
 
@@ -370,6 +390,7 @@ class OcurrenceControllerFTest extends TestCase
                     'created_at',
                     'updated_at',
                     'type' => ['id', 'name', 'created_at', 'updated_at'],
+                    'likes_count',
                 ],
 
             ],
@@ -422,5 +443,61 @@ class OcurrenceControllerFTest extends TestCase
 
         $response->assertStatus(401);
 
+    }
+
+    public function test_auth_user_can_like_ocurrence()
+    {
+        $user      = User::factory()->create();
+        $ocurrence = Ocurrence::factory()->create();
+
+        $response = $this->actingAs($user)->getJson("/api/ocurrences/like/{$ocurrence->id}");
+
+        $response->assertStatus(201)
+            ->assertJson([
+                'message'   => 'Ocorrência curtida com sucesso.',
+                'ocurrence' => ['liked_by_auth_user' => true, 'likes_count' => 1],
+            ]);
+
+        $this->assertDatabaseHas('like_ocurrences', [
+            'user_id'      => $user->id,
+            'ocurrence_id' => $ocurrence->id,
+        ]);
+    }
+
+    public function test_auth_user_can_dislike_ocurrence()
+    {
+        $user      = User::factory()->create();
+        $ocurrence = Ocurrence::factory()->create();
+
+        LikeOcurrenceFactory::new()->create([
+            'user_id'      => $user->id,
+            'ocurrence_id' => $ocurrence->id,
+        ]);
+
+        $response = $this->actingAs($user)->getJson("/api/ocurrences/like/{$ocurrence->id}");
+
+        $response->assertStatus(200)
+            ->assertJson([
+                'message'   => 'Curtida removida com sucesso.',
+                'ocurrence' => ['liked_by_auth_user' => false, 'likes_count' => 0],
+            ]);
+
+        $this->assertDatabaseMissing('like_ocurrences', [
+            'user_id'      => $user->id,
+            'ocurrence_id' => $ocurrence->id,
+        ]);
+    }
+
+    public function test_unauth_user_cannot_like_ocurrence()
+    {
+        $ocurrence = Ocurrence::factory()->create();
+
+        $response = $this->getJson("/api/ocurrences/like/{$ocurrence->id}");
+
+        $response->assertStatus(401);
+
+        $this->assertDatabaseMissing('like_ocurrences', [
+            'ocurrence_id' => $ocurrence->id,
+        ]);
     }
 }

@@ -6,6 +6,7 @@ use Clickbar\Magellan\Data\Geometries\Point;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * @property Point $location
@@ -41,12 +42,15 @@ class Ocurrence extends Model
     ];
 
     protected $casts = [
-        'location'        => Point::class,
-        'is_active'       => 'boolean',
-        'resolution_date' => 'datetime',
+        'location'           => Point::class,
+        'is_active'          => 'boolean',
+        'resolution_date'    => 'datetime',
+        'liked_by_auth_user' => 'boolean',
     ];
 
     protected $with = ['type'];
+
+    protected $appends = ['liked_by_auth_user', 'likes_count'];
 
     public function type(): BelongsTo
     {
@@ -56,5 +60,21 @@ class Ocurrence extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function likes(): HasMany
+    {
+        return $this->hasMany(LikeOcurrence::class, 'ocurrence_id');
+    }
+
+    public function getLikedByAuthUserAttribute(): bool
+    {
+
+        return $this->likes()->where('user_id', auth()->id())->exists();
+    }
+
+    public function getLikesCountAttribute(): int
+    {
+        return $this->likes()->count();
     }
 }

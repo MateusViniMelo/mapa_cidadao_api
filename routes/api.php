@@ -25,8 +25,10 @@ Route::prefix('ocurrences')->group(function () {
     Route::get('', [OcurrenceController::class, 'index']);
 
     Route::middleware('auth:sanctum')->group(function () {
+        Route::get('listar', [OcurrenceController::class, 'index']);
         Route::post('', [OcurrenceController::class, 'store']);
-        Route::post('inactivate/{ocurrence}', [OcurrenceController::class, 'inactiveOcurrence']);
+        Route::post('inactivate/{ocurrence}', [OcurrenceController::class, 'inactive']);
+        Route::get('like/{ocurrence}', [OcurrenceController::class, 'likeOrDislike']);
         Route::get('my-ocurrences', [OcurrenceController::class, 'ocurrencesUserAuth']);
     });
 
