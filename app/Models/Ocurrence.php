@@ -46,6 +46,8 @@ class Ocurrence extends Model
         'resolution_date' => 'datetime',
     ];
 
+    protected $with = ['type'];
+
     public function type(): BelongsTo
     {
         return $this->belongsTo(TypeOcurrence::class, 'type_id');

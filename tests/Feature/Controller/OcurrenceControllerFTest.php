@@ -349,27 +349,33 @@ class OcurrenceControllerFTest extends TestCase
         Ocurrence::factory()->count(3)->create([
             'user_id' => $otherUser->id,
         ]);
+        $jsonStructureExpected = [
+            'data' => [
+                '*' => ['id', 'type_id', 'location', 'type_id', 'user_id', 'description', 'address_name', 'city', 'state', 'country', 'is_active', 'solution_description', 'resolution_date', 'type_closure', 'created_at', 'updated_at'],
+            ],
+            'first_page_url',
+            'from',
+            'last_page',
+            'last_page_url',
+            'links' => [
+                '*' => ['url', 'label', 'page', 'active'],
+            ],
+            'next_page_url',
+            'path',
+            'per_page',
+            'prev_page_url',
+            'to',
+            'total',
+            'type' => [
+                'id', 'name',
+            ],
+        ];
 
         $responsePage1 = $this->actingAs($user)->getJson('/api/ocurrences/my-ocurrences?page=1');
+
+        print_r($responsePage1->getContent());
         $responsePage1->assertStatus(200)
-            ->assertJsonStructure([
-                'data' => [
-                    '*' => ['id', 'type_id', 'location', 'type_id', 'user_id', 'description', 'address_name', 'city', 'state', 'country', 'is_active', 'created_at', 'updated_at'],
-                ],
-                'first_page_url',
-                'from',
-                'last_page',
-                'last_page_url',
-                'links' => [
-                    '*' => ['url', 'label', 'page', 'active'],
-                ],
-                'next_page_url',
-                'path',
-                'per_page',
-                'prev_page_url',
-                'to',
-                'total',
-            ]);
+            ->assertJsonStructure($jsonStructureExpected);
 
         $responseData1 = $responsePage1->json('data');
 
@@ -381,24 +387,7 @@ class OcurrenceControllerFTest extends TestCase
 
         $responsePage2 = $this->actingAs($user)->getJson('/api/ocurrences/my-ocurrences?page=2');
         $responsePage2->assertStatus(200)
-            ->assertJsonStructure([
-                'data' => [
-                    '*' => ['id', 'type_id', 'location', 'type_id', 'user_id', 'description', 'address_name', 'city', 'state', 'country', 'is_active', 'created_at', 'updated_at'],
-                ],
-                'first_page_url',
-                'from',
-                'last_page',
-                'last_page_url',
-                'links' => [
-                    '*' => ['url', 'label', 'page', 'active'],
-                ],
-                'next_page_url',
-                'path',
-                'per_page',
-                'prev_page_url',
-                'to',
-                'total',
-            ]);
+            ->assertJsonStructure($jsonStructureExpected);
 
         $responseData2 = $responsePage2->json('data');
 

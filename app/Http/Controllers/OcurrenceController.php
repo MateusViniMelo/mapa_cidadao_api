@@ -221,6 +221,7 @@ class OcurrenceController extends Controller
      */
     public function ocurrencesUserAuth(Request $request): JsonResponse
     {
+
         $ocurrences = Ocurrence::where(['user_id' => auth()->id()])->orderByDesc('created_at')->paginate(10);
 
         return response()->json($ocurrences);
