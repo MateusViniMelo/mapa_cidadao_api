@@ -1,7 +1,7 @@
 # ===============================
 # Stage 0 - Composer
 # ===============================
-FROM composer:2 AS vendor
+FROM composer:2.7.7 AS vendor
 
 WORKDIR /app
 COPY . .
