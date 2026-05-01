@@ -6,8 +6,6 @@ php artisan config:clear || true
 php artisan route:clear || true
 php artisan view:clear || true
 
-echo "Generating app key..."
-php artisan key:generate --force || true
 
 echo "Caching config..."
 php artisan config:cache || true

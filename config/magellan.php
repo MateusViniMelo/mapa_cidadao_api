@@ -9,7 +9,7 @@ return [
      *
      * @see https://www.postgis.net/workshops/postgis-intro/schemas.html
      */
-    'schema' => 'public',
+    'schema' => env('MAGELLAN_SCHEMA', 'public'),
 
     /**
      * The generator that should be used when converting a geometry to JSON.
