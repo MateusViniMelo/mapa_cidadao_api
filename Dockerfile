@@ -6,6 +6,13 @@ FROM composer:2.7.7 AS vendor
 WORKDIR /app
 COPY . .
 
+RUN mkdir -p bootstrap/cache \
+    storage \
+    storage/framework/cache \
+    storage/framework/sessions \
+    storage/framework/views \
+    && chmod -R 777 bootstrap/cache storage
+
 RUN composer install --no-dev --optimize-autoloader
 RUN composer dump-autoload --optimize
 
