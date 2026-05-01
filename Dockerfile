@@ -13,7 +13,8 @@ RUN mkdir -p bootstrap/cache \
     storage/framework/views \
     && chmod -R 777 bootstrap/cache storage
 
-RUN composer install --no-dev --optimize-autoloader
+RUN composer install --no-dev --optimize-autoloader --no-scripts
+RUN php artisan package:discover --ansi
 RUN composer dump-autoload --optimize
 
 
