@@ -1,14 +1,28 @@
 <?php
 
-use Knuckles\Scribe\Config\AuthIn;
-
-use function Knuckles\Scribe\Config\configureStrategy;
-
-use Knuckles\Scribe\Config\Defaults;
-
-use function Knuckles\Scribe\Config\removeStrategies;
-
-use Knuckles\Scribe\Extracting\Strategies;
+// Em produção, este projeto roda `composer install --no-dev`.
+// O Scribe está em require-dev, então este config precisa ser seguro
+// mesmo quando o pacote não estiver instalado (ex.: durante package:discover).
+if (!class_exists(\Knuckles\Scribe\ScribeServiceProvider::class)) {
+    return [
+        'title' => config('app.name') . ' API Documentation',
+        'description' => 'A Mapa Cidadão é uma API RESTful desenvolvida em Laravel, que permite aos usuários registrar, listar e gerenciar ocorrências urbanas de maneira simples, geolocalizada e segura.',
+        'base_url' => config('app.url'),
+        'routes' => [
+            [
+                'match' => [
+                    'prefixes' => ['api/*'],
+                    'domains' => ['*'],
+                ],
+                'include' => [],
+                'exclude' => [],
+            ],
+        ],
+        'auth' => [
+            'enabled' => false,
+        ],
+    ];
+}
 
 // Only the most common configs are shown. See the https://scribe.knuckles.wtf/laravel/reference/config for all.
 
@@ -121,7 +135,7 @@ INTRO,
     'auth' => [
         'enabled'     => true,
         'default'     => false,
-        'in'          => AuthIn::BEARER->value,
+        'in'          => \Knuckles\Scribe\Config\AuthIn::BEARER->value,
         'name'        => 'Authorization', // CORRETO para Bearer token
         'use_value'   => env('SCRIBE_AUTH_KEY', 'Bearer {token-aqui}'),
         'placeholder' => 'Bearer {YOUR_AUTH_TOKEN}',
@@ -209,27 +223,27 @@ INTRO,
     // Use removeStrategies() to remove an included strategy.
     'strategies' => [
         'metadata' => [
-            ...Defaults::METADATA_STRATEGIES,
+            ...\Knuckles\Scribe\Config\Defaults::METADATA_STRATEGIES,
         ],
         'headers' => [
-            ...Defaults::HEADERS_STRATEGIES,
-            Strategies\StaticData::withSettings(data: [
+            ...\Knuckles\Scribe\Config\Defaults::HEADERS_STRATEGIES,
+            \Knuckles\Scribe\Extracting\Strategies\StaticData::withSettings(data: [
                 'Content-Type' => 'application/json',
                 'Accept'       => 'application/json',
             ]),
         ],
         'urlParameters' => [
-            ...Defaults::URL_PARAMETERS_STRATEGIES,
+            ...\Knuckles\Scribe\Config\Defaults::URL_PARAMETERS_STRATEGIES,
         ],
         'queryParameters' => [
-            ...Defaults::QUERY_PARAMETERS_STRATEGIES,
+            ...\Knuckles\Scribe\Config\Defaults::QUERY_PARAMETERS_STRATEGIES,
         ],
         'bodyParameters' => [
-            ...Defaults::BODY_PARAMETERS_STRATEGIES,
+            ...\Knuckles\Scribe\Config\Defaults::BODY_PARAMETERS_STRATEGIES,
         ],
-        'responses' => configureStrategy(
-            Defaults::RESPONSES_STRATEGIES,
-            Strategies\Responses\ResponseCalls::withSettings(
+        'responses' => \Knuckles\Scribe\Config\configureStrategy(
+            \Knuckles\Scribe\Config\Defaults::RESPONSES_STRATEGIES,
+            \Knuckles\Scribe\Extracting\Strategies\Responses\ResponseCalls::withSettings(
                 only: ['GET *'],
                 // Recommended: disable debug mode in response calls to avoid error stack traces in responses
                 config: [
@@ -238,7 +252,7 @@ INTRO,
             )
         ),
         'responseFields' => [
-            ...Defaults::RESPONSE_FIELDS_STRATEGIES,
+            ...\Knuckles\Scribe\Config\Defaults::RESPONSE_FIELDS_STRATEGIES,
         ],
     ],
 
